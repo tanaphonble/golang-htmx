@@ -1,4 +1,4 @@
-module gohtmx
+module github.com/tanaphonble/golang-htmx
 
 go 1.23.3
 
