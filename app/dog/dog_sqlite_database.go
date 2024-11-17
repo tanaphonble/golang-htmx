@@ -42,3 +42,12 @@ func (db *dogDatabase) SelectAll() ([]Dog, error) {
 
 	return dogs, nil
 }
+
+func (db *dogDatabase) Delete(id string) error {
+	_, err := db.connection.Exec("DELETE FROM dogs WHERE id = ?", id)
+	if err != nil {
+		return fmt.Errorf("failed to delete dogs, error: %w", err)
+	}
+
+	return nil
+}

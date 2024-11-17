@@ -18,6 +18,7 @@ func RegisterHandler(e *gin.Engine, dogDatabase DogDatabase) {
 
 	e.GET("/components/dog-list", h.List)
 	e.POST("/dogs", h.Create)
+	e.DELETE("/dogs/:id", h.Delete)
 }
 
 func newHandler(dogDatabase DogDatabase) *handler {
@@ -65,11 +66,18 @@ func (h *handler) Create(c *gin.Context) {
 		return
 	}
 
-	htmlContent := `<tr>
-        <td>` + newDog.Name + `</td>
-        <td>` + newDog.Breed + `</td>
-    </tr>`
+	c.Status(http.StatusCreated)
+}
 
-	c.Header("Content-Type", "text/html")
-	c.String(http.StatusCreated, htmlContent)
+func (h *handler) Delete(c *gin.Context) {
+	id := c.Param("id")
+
+	err := h.dogDatabase.Delete(id)
+	if err != nil {
+		slog.Error("Failed to delete dog", slog.String("error", err.Error()), slog.String("id", id))
+		c.String(http.StatusInternalServerError, "Failed to delete dog")
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

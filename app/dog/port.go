@@ -10,4 +10,5 @@ type Dog struct {
 type DogDatabase interface {
 	Insert(Dog) error
 	SelectAll() ([]Dog, error)
+	Delete(id string) error
 }

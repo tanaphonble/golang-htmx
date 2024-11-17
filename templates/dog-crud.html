@@ -16,24 +16,43 @@
         hx-disable-elt="#add-btn"
         hx-target="table tbody"
         hx-swap="afterbegin"
-        hx-on:htmx:after-request="this.reset()"
+        hx-on:htmx:after-request="htmx.trigger('#dog-table', 'refresh-list')"
       >
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" id="name" name="name" required placeholder="Enter dog's name" />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="Enter dog's name"
+          />
         </div>
         <div class="form-group">
           <label for="breed">Breed</label>
-          <input type="text" id="breed" name="breed" required placeholder="Enter dog's breed" />
+          <input
+            type="text"
+            id="breed"
+            name="breed"
+            required
+            placeholder="Enter dog's breed"
+          />
         </div>
         <button id="add-btn" class="btn">Add Dog</button>
       </form>
 
-      <table class="dog-table" hx-trigger="revealed" hx-get="/components/dog-list" hx-target="tbody">
+      <table
+        id="dog-table"
+        class="dog-table"
+        hx-trigger="load, refresh-list"
+        hx-get="/components/dog-list"
+        hx-target="tbody"
+      >
         <thead>
           <tr>
             <th>Name</th>
             <th>Breed</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody></tbody>

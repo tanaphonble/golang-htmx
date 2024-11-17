@@ -22,6 +22,7 @@ type DogHandlerTestSuite struct {
 func (suite *DogHandlerTestSuite) SetupTest() {
 	suite.ctrl = gomock.NewController(suite.T())
 	suite.mockDogDatabase = NewMockDogDatabase(suite.ctrl)
+	gin.SetMode(gin.TestMode)
 	suite.router = gin.Default()
 	RegisterHandler(suite.router, suite.mockDogDatabase)
 }
@@ -79,8 +80,6 @@ func (suite *DogHandlerTestSuite) TestCreate_Success() {
 
 	// Assert
 	suite.Equal(http.StatusCreated, rec.Code)
-	suite.Contains(rec.Body.String(), `<td>Charlie</td>`)
-	suite.Contains(rec.Body.String(), `<td>Poodle</td>`)
 }
 
 func (suite *DogHandlerTestSuite) TestCreate_ValidationError() {
