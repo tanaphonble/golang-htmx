@@ -1,14 +1,25 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"database/sql"
+	"log"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/tanaphonble/golang-htmx/app/dog"
+)
 
 func main() {
+	dbConnection, err := sql.Open("sqlite3", "./dog.db")
+	if err != nil {
+		log.Fatalf("failed to open sqlite db, error: %s", err)
+	}
+	defer dbConnection.Close()
+
+	dogDatabase := dog.NewDogDatabase(dbConnection)
+
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	dog.RegisterHandler(r, dogDatabase)
 
 	r.LoadHTMLGlob("templates/*")
 
@@ -19,10 +30,14 @@ func main() {
 	})
 
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", gin.H{
+		c.HTML(200, "dog-crud.html", gin.H{
 			"title": "Golang X HTMX",
 		})
 	})
+
+	// r.GET("/table-rows", func(ctx *gin.Context) {
+
+	// })
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
